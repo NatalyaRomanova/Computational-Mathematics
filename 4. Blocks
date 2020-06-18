@@ -1,0 +1,234 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Blocks
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = true;
+            dataGridView1.Rows[0].Cells[0].Value = -1;
+            dataGridView1.Rows[1].Cells[0].Value = 2;
+            dataGridView1.Rows[2].Cells[0].Value = -2;
+            dataGridView1.Rows[3].Cells[0].Value = -2;
+            
+            dataGridView1.Rows[0].Cells[1].Value = -1;
+            dataGridView1.Rows[1].Cells[1].Value = 3;
+            dataGridView1.Rows[2].Cells[1].Value = 0;
+            dataGridView1.Rows[3].Cells[1].Value = -2;
+         
+            dataGridView1.Rows[0].Cells[2].Value = -1;
+            dataGridView1.Rows[1].Cells[2].Value = 4;
+            dataGridView1.Rows[2].Cells[2].Value = 1;
+            dataGridView1.Rows[3].Cells[2].Value = -3;
+            
+            dataGridView1.Rows[0].Cells[3].Value = -2;
+            dataGridView1.Rows[1].Cells[3].Value = 3;
+            dataGridView1.Rows[2].Cells[3].Value = -6;
+            dataGridView1.Rows[3].Cells[3].Value = -3;
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            button3.Enabled = true;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView2.AllowUserToAddRows = false;
+            dataGridView3.AllowUserToAddRows = false;
+            dataGridView4.AllowUserToAddRows = false;
+            dataGridView5.AllowUserToAddRows = false;
+            dataGridView6.AllowUserToAddRows = false;
+            
+
+            for (int i = 0; i < Convert.ToInt32(textBox1.Text); i++)
+            {
+                dataGridView1.Columns.Add("0", "0");
+                dataGridView1.Columns[i].Width = 70;
+                dataGridView1.Rows.Add();
+          
+            }
+
+            for (int i = 0; i < Math.Round(Convert.ToSingle(textBox1.Text)/2); i++)
+            {
+                dataGridView3.Columns.Add("0", "0");
+                dataGridView3.Columns[i].Width = 70;
+                dataGridView3.Rows.Add();
+
+                dataGridView4.Columns.Add("0", "0");
+                dataGridView4.Columns[i].Width = 70;
+                dataGridView4.Rows.Add();
+
+                dataGridView5.Columns.Add("0", "0");
+                dataGridView5.Columns[i].Width = 70;
+                dataGridView5.Rows.Add();
+
+                dataGridView6.Columns.Add("0", "0");
+                dataGridView6.Columns[i].Width = 70;
+                dataGridView6.Rows.Add();
+
+               
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            button3.Enabled = false;
+            button1.Enabled = false;
+        }
+
+        float[,] multi_matrix(float[,] a, float[,] b)
+        {
+            int mSize = Convert.ToInt32(textBox1.Text);
+            int half_size = mSize / 2;
+            float[,] c = new float[half_size, half_size];
+            
+            c[0, 0] = a[0, 0] * b[0, 0] + a[0, 1] * b[1, 0];
+            c[1, 0] = a[1, 0] * b[0, 0] + a[1, 1] * b[1, 0];
+            c[0, 1] = a[0, 0] * b[0, 1] + a[0, 1] * b[1, 1];
+            c[1, 1] = a[1, 0] * b[0, 1] + a[1, 1] * b[1, 1];
+              
+            return c;
+        }
+
+        float[,] subtract_matrix(float[,] a, float[,] b)
+        {
+            int mSize = Convert.ToInt32(textBox1.Text);
+            int half_size = mSize / 2;
+            float[,] c = new float[half_size, half_size];
+
+            for (int i = 0; i < half_size; i++)
+            {
+                for (int j = 0; j < half_size; j++)
+                {
+                    c[i, j] = a[i,j]-b[i,j];   
+                }
+            }
+            return c;
+        }
+
+        float[,] anti_matrix(float[,] a)
+        {
+            int mSize = Convert.ToInt32(textBox1.Text);
+            int half_size = mSize / 2;
+            float[,] c = new float[half_size, half_size];
+            for (int i=0; i<half_size; i++)
+            {
+                for (int j=0; j<half_size; j++)
+                {
+                    if (i != j)
+                    {
+                        c[i, j] = (-1)*a[ i, j] / (a[0, 0] * a[1, 1] - a[0, 1] * a[1, 0]);
+                    }
+                    else
+                    {
+                        c[i, j] = a[(half_size-1) - i, (half_size-1) - j] / (a[0, 0] * a[1, 1] - a[0, 1] * a[1, 0]);
+                    }
+                }
+            }
+            return c;
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int mSize = Convert.ToInt32(textBox1.Text);
+            int half_size = mSize / 2; //Convert.ToInt32(Math.Round(Convert.ToSingle(mSize / 2)))
+
+            float[,] matrix = new float[mSize, mSize];
+
+            float[,] block1 = new float[half_size, half_size];
+            float[,] block2 = new float[half_size, half_size];
+            float[,] block3 = new float[half_size, half_size];
+            float[,] block4 = new float[half_size, half_size];
+
+            float[] b_mas = new float[mSize];
+            float[,] x = new float[100, 100];           
+
+            dataGridView2.Rows.Clear();
+            dataGridView2.Columns.Clear();
+
+            for (int i = 0; i < mSize; i++)
+            {
+                dataGridView2.Columns.Add("0", "0");
+                dataGridView2.Columns[i].Width = 70;
+                dataGridView2.Rows.Add();
+                for (int j = 0; j < mSize; j++)
+                {
+                    matrix[i, j] = Convert.ToSingle(dataGridView1.Rows[i].Cells[j].Value.ToString());
+                    if (mSize/(i+1) >= 2 && mSize/(j+1) >= 2)
+                    {
+                        block1[i, j] = matrix[i, j];
+                        dataGridView3.Rows[i].Cells[j].Value = block1[i, j].ToString();
+                    }
+                    if (mSize / (i + 1) >= 2 && mSize / (j + 1) < 2)
+                    {
+                        block2[i, j - half_size] = matrix[i, j];
+                        dataGridView4.Rows[i].Cells[j-half_size].Value = block2[i, j - half_size].ToString();
+                    }
+                    if (mSize / (i + 1) < 2 && mSize / (j + 1) >= 2)
+                    {
+                        block3[i - half_size, j] = matrix[i, j];
+                        dataGridView5.Rows[i-half_size].Cells[j].Value = block3[i - half_size, j].ToString();
+                    }
+                    if (mSize / (i + 1) < 2 && mSize / (j + 1) < 2)
+                    {
+                        block4[i - half_size, j - half_size] = matrix[i, j];
+                        dataGridView6.Rows[i-half_size].Cells[j-half_size].Value = block4[i - half_size, j - half_size].ToString();
+                    }
+                }
+            }
+
+            float[,] X = new float[half_size, half_size];
+            float[,] Y = new float[half_size, half_size];
+            float[,] U = new float[half_size, half_size];
+            float[,] V = new float[half_size, half_size];
+                     
+            X = anti_matrix(subtract_matrix(block1, multi_matrix(multi_matrix(block2, anti_matrix(block4)), block3)));
+            V = anti_matrix(subtract_matrix(block4, multi_matrix(multi_matrix(block3, anti_matrix(block1)), block2)));
+            U = multi_matrix(multi_matrix(anti_matrix(subtract_matrix(multi_matrix(multi_matrix(block3, anti_matrix(block1)), block2), block4)), block3), anti_matrix(block1));
+            Y = multi_matrix(multi_matrix(anti_matrix(subtract_matrix(multi_matrix(multi_matrix(block2, anti_matrix(block4)), block3), block1)), block2), anti_matrix(block4));
+
+            for (int i = 0; i < mSize; i++)
+            {
+              
+                for (int j = 0; j < mSize; j++)
+                {
+                  
+                    if (mSize/(i+1) >= 2 && mSize/(j+1) >= 2)
+                    {                      
+                        dataGridView2.Rows[i].Cells[j].Value = X[i, j].ToString();
+                    }
+                    if (mSize / (i + 1) >= 2 && mSize / (j + 1) < 2)
+                    {                        
+                        dataGridView2.Rows[i].Cells[j].Value = Y[i, j - half_size].ToString();
+                    }
+                    if (mSize / (i + 1) < 2 && mSize / (j + 1) >= 2)
+                    {                       
+                        dataGridView2.Rows[i].Cells[j].Value = U[i - half_size, j].ToString();
+                    }
+                    if (mSize / (i + 1) < 2 && mSize / (j + 1) < 2)
+                    {                        
+                        dataGridView2.Rows[i].Cells[j].Value = V[i - half_size, j - half_size].ToString();
+                    }
+                }
+            }
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
